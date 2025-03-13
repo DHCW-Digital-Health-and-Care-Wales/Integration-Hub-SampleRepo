@@ -31,7 +31,7 @@ public class Sender {
                     <MSG_ID>IPI</MSG_ID>
                     <UNIT_NUMBER>B6158954</UNIT_NUMBER>
                     <NHS_NUMBER>""</NHS_NUMBER>
-                    <SURNAME>BIDEN
+                    <SURNAME>BIDEN</SURNAME>
                     <FORENAME>JOE</FORENAME>
                     <TITLE>Mr.</TITLE>
                     <BIRTHDATE>1968-06-12</BIRTHDATE>
@@ -163,8 +163,10 @@ public class Sender {
                 </TRANSACTION>
             </MAINDATA>
             """;
+        System.out.println("sending");
         senderClient.sendMessage(new ServiceBusMessage(validXML.getBytes(StandardCharsets.UTF_16)));
         System.out.println("Sent : " + validXML);
+        senderClient.close();
 
     }
 }
