@@ -2,24 +2,25 @@ package wales.nhs.dhcw.inthub.sample.sbcon;
 
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusMessage;
-import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Properties;
 
 public class Sender {
-    private static final String CONNECTION_STRING = "Endpoint=sb://127.0.0.1;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;" ;
-    private static final String QUEUE_NAME = "dhcw-integration-hub-poc-docker-ingress";
+    public static void main(String[] args) throws Exception {
+        var config = readConfig();
 
-    public static void main(String[] args) {
         // Create a ServiceBusClientBuilder
         ServiceBusClientBuilder builder = new ServiceBusClientBuilder()
-            .connectionString(CONNECTION_STRING);
+            .connectionString(config.getProperty("CONNECTION_STRING"));
 
         // Sending a message
         ServiceBusSenderClient senderClient = builder
             .sender()
-            .queueName(QUEUE_NAME)
+            .queueName(config.getProperty("INGRESS_QUEUE_NAME"))
             .buildClient();
 
         String validXML = """
@@ -28,7 +29,7 @@ public class Sender {
             <MAINDATA xmlns="http://PAS_Demographics">\s
                 <TRANSACTION>
                     <TRANSACTION_ID>28037909</TRANSACTION_ID>
-                    <MSG_ID>IPI</MSG_ID>
+                    <MSG_ID>MPI</MSG_ID>
                     <UNIT_NUMBER>B6158954</UNIT_NUMBER>
                     <NHS_NUMBER>""</NHS_NUMBER>
                     <SURNAME>BIDEN</SURNAME>
@@ -168,5 +169,14 @@ public class Sender {
         System.out.println("Sent : " + validXML);
         senderClient.close();
 
+    }
+
+    private static Properties readConfig() throws IOException {
+        String appConfigPath = Thread.currentThread().getContextClassLoader().getResource("env.properties").getPath();
+
+        Properties appProps = new Properties();
+        appProps.load(new FileInputStream(appConfigPath));
+
+        return appProps;
     }
 }
