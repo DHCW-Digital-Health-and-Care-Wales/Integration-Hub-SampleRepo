@@ -3,6 +3,7 @@ package wales.nhs.dhcw.inthub.sample.sbcon;
 import com.azure.messaging.servicebus.ServiceBusClientBuilder;
 import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
+import wales.nhs.dhcw.inthub.sample.sbcon.lib.Config;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,16 +12,16 @@ import java.util.Properties;
 
 public class Sender {
     public static void main(String[] args) throws Exception {
-        var config = readConfig();
+        var config = Config.readConfig();
 
         // Create a ServiceBusClientBuilder
         ServiceBusClientBuilder builder = new ServiceBusClientBuilder()
-            .connectionString(config.getProperty("CONNECTION_STRING"));
+            .connectionString(config.connectionString());
 
         // Sending a message
         ServiceBusSenderClient senderClient = builder
             .sender()
-            .queueName(config.getProperty("INGRESS_QUEUE_NAME"))
+            .queueName(config.ingressQueueName())
             .buildClient();
 
         String validXML = """
@@ -102,7 +103,7 @@ public class Sender {
                     <PREFERRED_LANGUAGE>2</PREFERRED_LANGUAGE>
                     <UPDATE_DATE>2025-02-06T08:36:12</UPDATE_DATE>
                     <USER_ID>BCLUAT448</USER_ID>
-                    <SYSTEM_ID>109</SYSTEM_ID>
+                    <SYSTEM_ID>102</SYSTEM_ID>
                     <EPISODE_NO>""</EPISODE_NO>
                     <SOURCE_ADMISSION>19 Usual place of residence</SOURCE_ADMISSION>
                     <SOURCE_ADMISSION_DESC>Usual place of residence</SOURCE_ADMISSION_DESC>
@@ -169,14 +170,5 @@ public class Sender {
         System.out.println("Sent : " + validXML);
         senderClient.close();
 
-    }
-
-    private static Properties readConfig() throws IOException {
-        String appConfigPath = Thread.currentThread().getContextClassLoader().getResource("env.properties").getPath();
-
-        Properties appProps = new Properties();
-        appProps.load(new FileInputStream(appConfigPath));
-
-        return appProps;
     }
 }

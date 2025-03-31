@@ -5,6 +5,7 @@ import com.azure.messaging.servicebus.ServiceBusReceiverClient;
 import com.azure.messaging.servicebus.models.SubQueue;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 public class LoggingReceiver {
 
@@ -46,6 +47,7 @@ public class LoggingReceiver {
             receiverClient.receiveMessages(1).forEach(msg -> {
                 try {
                     System.out.println("Received: " + new String(msg.getBody().toBytes(), "UTF-8"));
+                    System.out.println("with properties: " + strigifyMap(msg.getApplicationProperties()));
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
@@ -58,5 +60,14 @@ public class LoggingReceiver {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String strigifyMap(Map<String, Object> properties) {
+        var builder = new StringBuilder();
+        properties.forEach((key, value) -> {
+            builder.append("[").append(key).append("]: ")
+                    .append(value).append(";").append("\n");
+        });
+        return builder.toString();
     }
 }
