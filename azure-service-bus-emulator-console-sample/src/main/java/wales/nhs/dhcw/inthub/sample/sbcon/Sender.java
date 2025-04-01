@@ -5,10 +5,7 @@ import com.azure.messaging.servicebus.ServiceBusMessage;
 import com.azure.messaging.servicebus.ServiceBusSenderClient;
 import wales.nhs.dhcw.inthub.sample.sbcon.lib.Config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
 
 public class Sender {
     public static void main(String[] args) throws Exception {

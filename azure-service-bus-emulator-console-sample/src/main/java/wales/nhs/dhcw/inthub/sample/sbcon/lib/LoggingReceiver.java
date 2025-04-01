@@ -20,7 +20,6 @@ public class LoggingReceiver {
     public static LoggingReceiver createTopicSubscriptionReceiver(String connectionString, String topicName, String subscriptionName) {
         ServiceBusClientBuilder builder = new ServiceBusClientBuilder()
                 .connectionString(connectionString);
-        // Receiving a message
         ServiceBusReceiverClient receiverClient = builder
                 .receiver()
                 .topicName(topicName)
@@ -29,10 +28,19 @@ public class LoggingReceiver {
         return new LoggingReceiver(receiverClient, topicName + " : " + subscriptionName);
     }
 
+    public static LoggingReceiver createQueueReceiver(String connectionString, String queueName) {
+        ServiceBusClientBuilder builder = new ServiceBusClientBuilder()
+                .connectionString(connectionString);
+        ServiceBusReceiverClient receiverClient = builder
+                .receiver()
+                .queueName(queueName)
+                .buildClient();
+        return new LoggingReceiver(receiverClient, queueName);
+    }
+
     public static LoggingReceiver createDlqQueueReceiver(String connectionString, String queueName) {
         ServiceBusClientBuilder builder = new ServiceBusClientBuilder()
                 .connectionString(connectionString);
-        // Receiving a message
         ServiceBusReceiverClient receiverClient = builder
                 .receiver()
                 .queueName(queueName)

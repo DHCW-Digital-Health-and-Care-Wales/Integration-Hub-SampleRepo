@@ -7,11 +7,10 @@ public class TranslationReceiver {
 
     public static void main(String[] args) throws Exception {
         Config config = Config.readConfig();
-        String topicName = "dhcw-integration-hub-poc-docker-hl7senders";
-        String subscriptionName = "dhcw-integration-hub-poc-docker-hl7senders-sub";
+        String queueName = "dhcw-integration-hub-poc-docker-sender";
 
-        var loggingReceiver = LoggingReceiver.createTopicSubscriptionReceiver(
-                config.connectionString(), topicName, subscriptionName
+        var loggingReceiver = LoggingReceiver.createQueueReceiver(
+                config.connectionString(), queueName
         );
 
         loggingReceiver.receiveMessages();
